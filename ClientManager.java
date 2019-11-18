@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class ClienteDAOImplementacao implements ClienteDAO{
+public class ClientManager implements ClienteDAO{
 
 	public boolean inserir(Cliente cliente) {
 		PreparedStatement ps = null;
