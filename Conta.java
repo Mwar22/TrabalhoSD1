@@ -10,8 +10,8 @@ public class Conta {
 	private Integer agencia;
 	
 
-	public Conta(String cpf, BigDecimal saldo, String senha) {
-		this.cpf = cpf;
+	public Conta(Cliente cliente, BigDecimal saldo, String senha) {
+		this.cpf = cliente.getCpf();
 		this.saldo = saldo;
 		this.senha = senha;
 	}

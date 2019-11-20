@@ -274,6 +274,40 @@ public class ContaDAOImplementacao implements ContaDAO {
 		}
 		
 	}
+	public Conta AtualizaSaldo(Conta conta) {
+		PreparedStatement ps = null;
+		int rs;
+		String url;
+		Connection conexaoBanco = null;
+		
+		try {
+			//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+
+			conexaoBanco = DriverManager.getConnection(url);
+			ps = conexaoBanco.prepareStatement("update movimento set saldo_ant = (select saldo from contas where id_conta = (?))");
+			ps.setInt(1, conta.getIdConta());
+			rs = ps.executeUpdate();
+
+			if (rs > 0) {
+
+				return conta;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+			if (conexaoBanco != null) {
+				try {
+					conexaoBanco.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 }
 	
