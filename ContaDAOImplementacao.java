@@ -1,5 +1,6 @@
 package br.com.diego.banco;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class ContaDAOImplementacao implements ContaDAO {
 
-	public Conta consultar(String cpf) {
+	public Conta saldo(String cpf) {
 		PreparedStatement ps = null;
 		ResultSet rs;
 		String url;
@@ -27,8 +28,8 @@ public class ContaDAOImplementacao implements ContaDAO {
 
 			if (rs.next()) {
 				conta = new Conta();
-
-				conta.setIdConta(rs.getInt("id"));
+				
+				conta.setIdConta(rs.getInt("id_conta"));
 				conta.setCpf(rs.getString("cpf"));
 				conta.setSaldo(rs.getBigDecimal("saldo"));
 
@@ -88,25 +89,25 @@ public class ContaDAOImplementacao implements ContaDAO {
 
 	}
 
-	public Conta consultar(Integer id) {
+	public Conta saldo(Integer id) {
 		PreparedStatement ps = null;
 		ResultSet rs;
 		String url;
 		Connection conexaoBanco = null;
 		Conta conta;
 		try {
-			//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+			
 			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 			conexaoBanco = DriverManager.getConnection(url);
-			ps = conexaoBanco.prepareStatement("select id_conta, cpf, saldo from contas where id=?");
+			ps = conexaoBanco.prepareStatement("select id_conta, cpf, saldo from contas where id_conta=?");
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 
 			if (rs.next()) {
 				conta = new Conta();
 
-				conta.setIdConta(rs.getInt("id"));
+				conta.setIdConta(rs.getInt("id_conta"));
 				conta.setCpf(rs.getString("cpf"));
 				conta.setSaldo(rs.getBigDecimal("saldo"));
 
@@ -134,7 +135,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 		String url;
 		Connection conexaoBanco = null;
 		try {
-			//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+			
 			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 			conexaoBanco = DriverManager.getConnection(url);
@@ -169,7 +170,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 		Conta conta;
 		List<Conta> listaconta = new ArrayList<Conta>();
 		try {
-			//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+			
 			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 			conexaoBanco = DriverManager.getConnection(url);
@@ -201,5 +202,80 @@ public class ContaDAOImplementacao implements ContaDAO {
 			}
 		}
 	}
+	public Conta Saque(Conta conta, BigDecimal valor) {
+		PreparedStatement ps = null;
+		int rs;
+		String url;
+		Connection conexaoBanco = null;
+		BigDecimal saldo = conta.getSaldo().subtract(valor) ;
+		try {
+			//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+
+			conexaoBanco = DriverManager.getConnection(url);
+			ps = conexaoBanco.prepareStatement("update contas set saldo = (?) where id_conta = (?)");
+			ps.setBigDecimal(1, saldo);
+			ps.setInt(2, conta.getIdConta());
+			rs = ps.executeUpdate();
+
+			if (rs > 0) {
+
+				return conta;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+			if (conexaoBanco != null) {
+				try {
+					conexaoBanco.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+	public Conta Deposito(Conta conta, BigDecimal valor) {
+		PreparedStatement ps = null;
+		int rs;
+		String url;
+		Connection conexaoBanco = null;
+		BigDecimal saldo = conta.getSaldo().add(valor) ;
+		try {
+			//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+
+			conexaoBanco = DriverManager.getConnection(url);
+			ps = conexaoBanco.prepareStatement("update contas set saldo = (?) where id_conta = (?)");
+			ps.setBigDecimal(1, saldo);
+			ps.setInt(2, conta.getIdConta());
+			rs = ps.executeUpdate();
+
+			if (rs > 0) {
+
+				return conta;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+			if (conexaoBanco != null) {
+				try {
+					conexaoBanco.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
 
 }
+	
+
+
