@@ -32,6 +32,16 @@ public class Cliente {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+	public String toString() {
+		StringBuilder strRetorno = new StringBuilder();
+		strRetorno.append("-------- ");
+		strRetorno.append("\nCliente: ");
+		strRetorno.append("\nNome: "+getNome());
+		strRetorno.append("\nCPF:"+getCpf());
+		strRetorno.append("\nEmail: "+getEmail());
+		strRetorno.append("\n-------- ");
+		
+		return strRetorno.toString(); 
+	}
 
 }
