@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContaDAOImplementacao implements ContaDAO {
+	
+	//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+	url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 	public Conta saldo(String cpf) {
 		PreparedStatement ps = null;
@@ -20,7 +23,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 		Conta conta;
 		try {
 			
-			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 			conexaoBanco = DriverManager.getConnection(url);
 			ps = conexaoBanco.prepareStatement("select id_conta, cpf, saldo from contas where cpf=?");
 			ps.setString(1, cpf);
@@ -57,8 +59,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 		String url;
 		Connection conexaoBanco = null;
 		try {
-			//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+
 
 			conexaoBanco = DriverManager.getConnection(url);
 			ps = conexaoBanco.prepareStatement("insert into contas (id_conta, senha, cpf, saldo, agencia) values (?,?,?,?,?)");
@@ -98,8 +99,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 		Conta conta;
 		try {
 			
-			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
-
 			conexaoBanco = DriverManager.getConnection(url);
 			ps = conexaoBanco.prepareStatement("select id_conta, cpf, saldo from contas where id_conta=?");
 			ps.setInt(1, id);
@@ -136,8 +135,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 		String url;
 		Connection conexaoBanco = null;
 		try {
-			
-			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 			conexaoBanco = DriverManager.getConnection(url);
 			ps = conexaoBanco.prepareStatement("delete from contas where id_conta =?");
@@ -171,8 +168,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 		Conta conta;
 		List<Conta> listaconta = new ArrayList<Conta>();
 		try {
-			
-			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 			conexaoBanco = DriverManager.getConnection(url);
 			ps = conexaoBanco.prepareStatement("select id_conta, cpf, saldo from contas where nome=?");
@@ -214,8 +209,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 		}else {
 			BigDecimal saldo = conta.getSaldo().subtract(valor) ;
 			try {
-				//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-				url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 	
 				conexaoBanco = DriverManager.getConnection(url);
 				ps = conexaoBanco.prepareStatement("update contas set saldo = (?) where id_conta = (?)");
@@ -253,8 +246,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 		Connection conexaoBanco = null;
 		BigDecimal saldo = conta.getSaldo().add(valor) ;
 		try {
-			//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 			conexaoBanco = DriverManager.getConnection(url);
 			ps = conexaoBanco.prepareStatement("update contas set saldo = (?) where id_conta = (?)");
@@ -291,8 +282,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 		Connection conexaoBanco = null;
 		
 		try {
-			//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 			conexaoBanco = DriverManager.getConnection(url);
 			ps = conexaoBanco.prepareStatement("update movimento set saldo_ant = (select saldo from contas where id_conta = (?))");
