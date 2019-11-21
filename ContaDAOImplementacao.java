@@ -12,13 +12,12 @@ import java.util.List;
 
 public class ContaDAOImplementacao implements ContaDAO {
 	
-	//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-	url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+	//String url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+	String url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 	public Conta saldo(String cpf) {
 		PreparedStatement ps = null;
 		ResultSet rs;
-		String url;
 		Connection conexaoBanco = null;
 		Conta conta;
 		try {
@@ -56,7 +55,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 	public boolean inserir(Conta conta, Cliente cliente) {
 		PreparedStatement ps = null;
 		int rs;
-		String url;
 		Connection conexaoBanco = null;
 		try {
 
@@ -94,7 +92,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 	public Conta saldo(Integer id) {
 		PreparedStatement ps = null;
 		ResultSet rs;
-		String url;
 		Connection conexaoBanco = null;
 		Conta conta;
 		try {
@@ -132,7 +129,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 
 	public boolean excluir(Conta conta) {
 		PreparedStatement ps = null;
-		String url;
 		Connection conexaoBanco = null;
 		try {
 
@@ -163,7 +159,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 	public List<Conta> listar(String nome) {
 		PreparedStatement ps = null;
 		ResultSet rs;
-		String url;
 		Connection conexaoBanco = null;
 		Conta conta;
 		List<Conta> listaconta = new ArrayList<Conta>();
@@ -201,7 +196,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 	public Conta Saque(Conta conta, BigDecimal valor) {
 		PreparedStatement ps = null;
 		int rs;
-		String url;
 		Connection conexaoBanco = null;
 		//compara valor com saldo, se o valor da saque for maior que o saldo a operação não é realizada.
 		if (valor.compareTo(conta.getSaldo()) == -1 ) {
@@ -242,7 +236,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 	public Conta Deposito(Conta conta, BigDecimal valor) {
 		PreparedStatement ps = null;
 		int rs;
-		String url;
 		Connection conexaoBanco = null;
 		BigDecimal saldo = conta.getSaldo().add(valor) ;
 		try {
@@ -278,7 +271,6 @@ public class ContaDAOImplementacao implements ContaDAO {
 	public Conta AtualizaSaldo(Conta conta) {
 		PreparedStatement ps = null;
 		int rs;
-		String url;
 		Connection conexaoBanco = null;
 		
 		try {
