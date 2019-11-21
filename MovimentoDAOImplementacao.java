@@ -13,13 +13,12 @@ import java.sql.Date;
 
 public class MovimentoDAOImplementacao {
 	
-	//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-	url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+	//String url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+	String url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 	
 	public boolean inserirMov(Conta conta, String tipo, BigDecimal valor) {
 		PreparedStatement ps = null;
 		int rs;
-		String url;
 		Connection conexaoBanco = null;
 		
 		try {
@@ -53,7 +52,6 @@ public class MovimentoDAOImplementacao {
 	}
 	public boolean excluirMov(Conta conta) {
 		PreparedStatement ps = null;
-		String url;
 		Connection conexaoBanco = null;
 		try {
 
