@@ -5,18 +5,22 @@ import java.util.Date;
 
 public class Main {
 	public static void main(String[] args) {
-		ClienteDAOImplementacao clienteDAO = new ClienteDAOImplementacao();
+		ClienteDAOImplementacao c1 = new ClienteDAOImplementacao();
 		ContaDAOImplementacao contaDAO = new ContaDAOImplementacao();
 		Cliente Joao = new Cliente("João","77766633312", "testando@hotmail.com");
-		/*boolean clienteJoao = clienteDAO.inserir(Joao);
-		System.out.println(clienteJoao);*/
-		//boolean ForaJoao = clienteDAO.excluir(Joao);
+		//insere Joao na tabela clientes
+		c1.inserir(Joao);
+		
 		Conta conta1 = new Conta(Joao,BigDecimal.valueOf(500),"asdfg");
 		conta1.setAgencia(45);
 		conta1.setIdConta(11156897);
-		conta1.setCpf("76894677");
-		contaDAO.saldo(123456789);
-		System.out.println(contaDAO.saldo(123456789));
+		
+		conta1.setSenha("asdfg");
+		//insere conta1 na tabela contas
+		contaDAO.inserir(conta1, Joao);
+		//deposito de 300 reais registrado na tabela movimento
+		contaDAO.Deposito(conta1, BigDecimal.valueOf(300));
+		
 		
 	}
 }

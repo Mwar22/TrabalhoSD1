@@ -13,7 +13,7 @@ import java.sql.Date;
 
 public class MovimentoDAOImplementacao {
 	
-	public boolean inserirMov(Conta conta, Integer id_mov, String tipo, BigDecimal valor) {
+	public boolean inserirMov(Conta conta, String tipo, BigDecimal valor) {
 		PreparedStatement ps = null;
 		int rs;
 		String url;
@@ -24,12 +24,11 @@ public class MovimentoDAOImplementacao {
 			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 			conexaoBanco = DriverManager.getConnection(url);
-			ps = conexaoBanco.prepareStatement("insert into movimento (valor,tipo,id_mov,id_conta, saldo_ant) values (?,?,?,?,?)");
+			ps = conexaoBanco.prepareStatement("insert into movimento (valor,tipo,id_conta, saldo_ant) values (?,?,?,?)");
 			ps.setBigDecimal(1, valor);
 			ps.setString(2, tipo);
-			ps.setInt(3, id_mov);
-			ps.setInt(4, conta.getIdConta());
-			ps.setBigDecimal(5, conta.getSaldo());
+			ps.setInt(3, conta.getIdConta());
+			ps.setBigDecimal(4, conta.getSaldo());
 			rs = ps.executeUpdate();
 
 			if (rs > 0) {

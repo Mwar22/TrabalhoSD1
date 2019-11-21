@@ -51,7 +51,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 		}
 	}
 
-	public boolean inserir(Conta conta) {
+	public boolean inserir(Conta conta, Cliente cliente) {
 		PreparedStatement ps = null;
 		int rs;
 		String url;
@@ -61,11 +61,12 @@ public class ContaDAOImplementacao implements ContaDAO {
 			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 			conexaoBanco = DriverManager.getConnection(url);
-			ps = conexaoBanco.prepareStatement("insert into contas (id_conta, cpf, saldo, agencia) values (?,?,?,?)");
+			ps = conexaoBanco.prepareStatement("insert into contas (id_conta, senha, cpf, saldo, agencia) values (?,?,?,?,?)");
 			ps.setInt(1, conta.getIdConta());
-			ps.setString(2, conta.getCpf());
-			ps.setBigDecimal(3, conta.getSaldo());
-			ps.setInt(4, conta.getAgencia());
+			ps.setString(2, conta.getSenha());
+			ps.setString(3, cliente.getCpf());
+			ps.setBigDecimal(4, conta.getSaldo());
+			ps.setInt(5, conta.getAgencia());
 			rs = ps.executeUpdate();
 
 			if (rs > 0) {
@@ -223,7 +224,9 @@ public class ContaDAOImplementacao implements ContaDAO {
 				rs = ps.executeUpdate();
 	
 				if (rs > 0) {
-										
+					//insere a operacao de saque e o valor na tabela movimento do B.D
+					MovimentoDAOImplementacao mov1 = new MovimentoDAOImplementacao();
+					mov1.inserirMov(conta, "saque", valor);
 					return conta;
 				} else {
 					return null;
@@ -260,6 +263,8 @@ public class ContaDAOImplementacao implements ContaDAO {
 			rs = ps.executeUpdate();
 
 			if (rs > 0) {
+				MovimentoDAOImplementacao mov1 = new MovimentoDAOImplementacao();
+				mov1.inserirMov(conta, "depósito", valor);
 
 				return conta;
 			} else {
