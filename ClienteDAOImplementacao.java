@@ -7,13 +7,13 @@ import java.sql.SQLException;
 
 public class ClienteDAOImplementacao implements ClienteDAO{
 	
-	//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-	url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+	//String url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+	String url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 	public boolean inserir(Cliente cliente) {
 		PreparedStatement ps = null;
 		int rs;
-		String url;
+		
 		Connection conexaoBanco = null;
 		try {
 			
@@ -49,7 +49,6 @@ public class ClienteDAOImplementacao implements ClienteDAO{
 
 	public boolean excluir(Cliente cliente) {
 		PreparedStatement ps = null;
-		String url;
 		Connection conexaoBanco = null;
 		try {
 
