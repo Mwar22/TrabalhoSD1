@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class ClienteDAOImplementacao implements ClienteDAO{
+	
+	//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+	url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
 
 	public boolean inserir(Cliente cliente) {
 		PreparedStatement ps = null;
@@ -13,8 +16,7 @@ public class ClienteDAOImplementacao implements ClienteDAO{
 		String url;
 		Connection conexaoBanco = null;
 		try {
-			//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+			
 
 			conexaoBanco = DriverManager.getConnection(url);
 			ps = conexaoBanco.prepareStatement("insert into clientes (cpf, email, nome) values (?,?,?)");
@@ -50,8 +52,7 @@ public class ClienteDAOImplementacao implements ClienteDAO{
 		String url;
 		Connection conexaoBanco = null;
 		try {
-			//url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-			url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+
 
 			conexaoBanco = DriverManager.getConnection(url);
 			ps = conexaoBanco.prepareStatement("delete from clientes where cpf =?");
