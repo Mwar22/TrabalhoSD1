@@ -165,7 +165,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 		try {
 
 			conexaoBanco = DriverManager.getConnection(url);
-			ps = conexaoBanco.prepareStatement("select id_conta, cpf, saldo from contas where nome=?");
+			ps = conexaoBanco.prepareStatement("select id_conta, cpf, saldo from contas where nome like ?");
 			ps.setString(1, nome);
 			rs = ps.executeQuery();
 
