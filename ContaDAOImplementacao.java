@@ -1,4 +1,4 @@
-package br.com.diego.banco;
+package com.br.diego.banco;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -13,7 +13,7 @@ import java.util.List;
 public class ContaDAOImplementacao implements ContaDAO {
 	
 	//String url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-	String url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+	String url = "jdbc:postgresql://localhost/Banco?user=postgres&password=postgres";
 
 	public Conta saldo(String cpf) {
 		PreparedStatement ps = null;
@@ -165,14 +165,16 @@ public class ContaDAOImplementacao implements ContaDAO {
 		try {
 
 			conexaoBanco = DriverManager.getConnection(url);
-			ps = conexaoBanco.prepareStatement("select id_conta, cpf, saldo from contas where nome like ?");
+			ps = conexaoBanco.prepareStatement("select ct.agencia, ct.id_conta, ct.cpf, ct.saldo  "
+					+ "from Clientes cl INNER JOIN Contas ct ON cl.cpf = ct.cpf where cl.nome like ?");
 			ps.setString(1, nome);
 			rs = ps.executeQuery();
 
 			while(rs.next() == true) {
 				conta = new Conta();
-
-				conta.setIdConta(rs.getInt("id"));
+				
+				conta.setAgencia(rs.getInt("agencia"));
+				conta.setIdConta(rs.getInt("id_conta"));
 				conta.setCpf(rs.getString("cpf"));
 				conta.setSaldo(rs.getBigDecimal("saldo"));
 				listaconta.add(conta);
@@ -268,6 +270,8 @@ public class ContaDAOImplementacao implements ContaDAO {
 		}
 		
 	}
+	
+/*	DESNECESSÁRIO / DEPOIS ESTA PARTE SERÁ EXCLUÍDA...
 	public Conta AtualizaSaldo(Conta conta) {
 		PreparedStatement ps = null;
 		int rs;
@@ -299,6 +303,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 			}
 		}
 	}
+	*/
 
 }
 	
