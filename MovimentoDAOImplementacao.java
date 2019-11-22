@@ -1,4 +1,4 @@
-package br.com.diego.banco;
+package com.br.diego.banco;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -11,10 +11,10 @@ import java.sql.Date;
 
 
 
-public class MovimentoDAOImplementacao {
+public class MovimentoDAOImplementacao implements MovimentoDAO {
 	
 	//String url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-	String url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+	String url = "jdbc:postgresql://localhost/Banco?user=postgres&password=postgres";
 	
 	public boolean inserirMov(Conta conta, String tipo, BigDecimal valor) {
 		PreparedStatement ps = null;
@@ -50,6 +50,7 @@ public class MovimentoDAOImplementacao {
 			}
 		}
 	}
+	
 	public boolean excluirMov(Conta conta) {
 		PreparedStatement ps = null;
 		Connection conexaoBanco = null;

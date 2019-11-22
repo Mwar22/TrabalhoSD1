@@ -1,4 +1,4 @@
-package br.com.diego.banco;
+package com.br.diego.banco;
 
 import java.math.BigDecimal;
 
