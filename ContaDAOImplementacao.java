@@ -15,26 +15,24 @@ public class ContaDAOImplementacao implements ContaDAO {
 	//String url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
 	String url = "jdbc:postgresql://localhost/Banco?user=postgres&password=postgres";
 
-	public Conta saldo(String cpf) {
+	
+	/*
+	 * retorna o saldo da conta do CPF especificado
+	 * 
+	 */
+	public BigDecimal saldo(String cpf) {
 		PreparedStatement ps = null;
 		ResultSet rs;
 		Connection conexaoBanco = null;
-		Conta conta;
 		try {
 			
 			conexaoBanco = DriverManager.getConnection(url);
-			ps = conexaoBanco.prepareStatement("select id_conta, cpf, saldo from contas where cpf=?");
+			ps = conexaoBanco.prepareStatement("select saldo from contas where cpf=?");
 			ps.setString(1, cpf);
 			rs = ps.executeQuery();
 
-			if (rs.next()) {
-				conta = new Conta();
-				
-				conta.setIdConta(rs.getInt("id_conta"));
-				conta.setCpf(rs.getString("cpf"));
-				conta.setSaldo(rs.getBigDecimal("saldo"));
-
-				return conta;
+			if (rs.next()) {				
+				return (rs.getBigDecimal("saldo"));
 			} else {
 				return null;
 			}
@@ -89,26 +87,24 @@ public class ContaDAOImplementacao implements ContaDAO {
 
 	}
 
-	public Conta saldo(Integer id) {
+	
+	/* 
+	 * retorna o saldo da conta
+	 * @param id : número da conta
+	 */
+	public BigDecimal saldo(Integer id) {
 		PreparedStatement ps = null;
 		ResultSet rs;
 		Connection conexaoBanco = null;
-		Conta conta;
 		try {
 			
 			conexaoBanco = DriverManager.getConnection(url);
-			ps = conexaoBanco.prepareStatement("select id_conta, cpf, saldo from contas where id_conta=?");
+			ps = conexaoBanco.prepareStatement("select saldo from contas where id_conta=?");
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 
 			if (rs.next()) {
-				conta = new Conta();
-
-				conta.setIdConta(rs.getInt("id_conta"));
-				conta.setCpf(rs.getString("cpf"));
-				conta.setSaldo(rs.getBigDecimal("saldo"));
-
-				return conta;
+				return (rs.getBigDecimal("saldo"));
 			} else {
 				return null;
 			}
@@ -195,80 +191,119 @@ public class ContaDAOImplementacao implements ContaDAO {
 			}
 		}
 	}
-	public Conta Saque(Conta conta, BigDecimal valor) {
-		PreparedStatement ps = null;
-		int rs;
+	
+	/*
+	 * Realiza saque ATÔMICO
+	 */
+	public String saque(Integer id_conta, String senha, BigDecimal valor) {
+		int result=-1;
+		String sql;
+		if (valor.compareTo(new BigDecimal(0)) == -1) return "ERRO: O valor deve ser positivo!";
+		
+		Statement s= null;
 		Connection conexaoBanco = null;
-		//compara valor com saldo, se o valor da saque for maior que o saldo a operação não é realizada.
-		if (valor.compareTo(conta.getSaldo()) == -1 ) {
-			return null;
-		}else {
-			BigDecimal saldo = conta.getSaldo().subtract(valor) ;
 			try {
-	
 				conexaoBanco = DriverManager.getConnection(url);
-				ps = conexaoBanco.prepareStatement("update contas set saldo = (?) where id_conta = (?)");
-				ps.setBigDecimal(1, saldo);
-				ps.setInt(2, conta.getIdConta());
-				rs = ps.executeUpdate();
-	
-				if (rs > 0) {
-					//insere a operacao de saque e o valor na tabela movimento do B.D
-					MovimentoDAOImplementacao mov1 = new MovimentoDAOImplementacao();
-					mov1.inserirMov(conta, "saque", valor);
-					return conta;
-				} else {
-					return null;
+
+				conexaoBanco.setAutoCommit(false);
+				s = conexaoBanco.createStatement();
+				
+				//insere o movimento com o saldo anterior à operação:
+				sql= 	"INSERT INTO Movimento (valor, tipo, id_conta, saldo_ant)"
+						+ " VALUES ("+valor+", 'SAQUE', "+id_conta
+						+", (select saldo from Contas where id_conta = "+id_conta+"));";
+
+				result = s.executeUpdate(sql);
+				if (result == 0) {//se não conseguir
+					conexaoBanco.rollback();//cancela tudo
+					return "Falha na operação";
 				}
+				
+				//Realiza a operação, atualizando o saldo:
+				sql =  " UPDATE Contas SET saldo = saldo -"+valor
+						+ "WHERE id_conta = "+id_conta+" AND saldo >= "+valor+"AND senha = '"+senha+"';";	
+				result = s.executeUpdate(sql);
+				
+				///(ATOMICIDADE) realiza todas as operações de uma vez, ou cancela tudo:
+				if (result == 0) {
+					conexaoBanco.rollback();
+					return "Falha na operação";
+				}
+				else {
+					conexaoBanco.commit();
+					return "Saque realizado com sucesso!";
+				}
+				
 			} catch (SQLException e) {
-				e.printStackTrace();
+				e.printStackTrace();		
 				throw new RuntimeException(e);
 			} finally {
 				if (conexaoBanco != null) {
 					try {
 						conexaoBanco.close();
+						s.close();
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
 				}
 			}
-		}
-		
 	}
-	public Conta Deposito(Conta conta, BigDecimal valor) {
-		PreparedStatement ps = null;
-		int rs;
+	
+	/*
+	 * Realiza depósito ATÔMICO
+	 */
+	public String deposito(Integer id_conta, String senha, BigDecimal valor) {
+		int result=-1;
+		String sql;
+		if (valor.compareTo(new BigDecimal(0)) == -1) return "ERRO: O valor deve ser positivo!";
+		
+		Statement s= null;
 		Connection conexaoBanco = null;
-		BigDecimal saldo = conta.getSaldo().add(valor) ;
-		try {
+			try {
+				conexaoBanco = DriverManager.getConnection(url);
 
-			conexaoBanco = DriverManager.getConnection(url);
-			ps = conexaoBanco.prepareStatement("update contas set saldo = (?) where id_conta = (?)");
-			ps.setBigDecimal(1, saldo);
-			ps.setInt(2, conta.getIdConta());
-			rs = ps.executeUpdate();
+				conexaoBanco.setAutoCommit(false);
+				s = conexaoBanco.createStatement();
+				
+				//insere o movimento com o saldo anterior à operação:
+				sql= 	"INSERT INTO Movimento (valor, tipo, id_conta, saldo_ant)"
+						+ " VALUES ("+valor+", 'DEPÓSITO', "+id_conta
+						+", (select saldo from Contas where id_conta = "+id_conta+"));";
 
-			if (rs > 0) {
-				MovimentoDAOImplementacao mov1 = new MovimentoDAOImplementacao();
-				mov1.inserirMov(conta, "depósito", valor);
-
-				return conta;
-			} else {
-				return null;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		} finally {
-			if (conexaoBanco != null) {
-				try {
-					conexaoBanco.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+				result = s.executeUpdate(sql);
+				if (result == 0) {//se não conseguir
+					conexaoBanco.rollback();//cancela tudo
+					return "Falha na operação";
+				}
+				
+				//Realiza a operação, atualizando o saldo:
+				sql =  " UPDATE Contas SET saldo = saldo +"+valor
+						+ "WHERE id_conta = "+id_conta+"AND senha = '"+senha+"';";	
+				result = s.executeUpdate(sql);
+				
+				///(ATOMICIDADE) realiza todas as operações de uma vez, ou cancela tudo:
+				if (result == 0) {
+					conexaoBanco.rollback();
+					return "Falha na operação";
+				}
+				else {
+					conexaoBanco.commit();
+					return "Depósito realizado com sucesso!";
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();		
+				throw new RuntimeException(e);
+			} finally {
+				if (conexaoBanco != null) {
+					try {
+						conexaoBanco.close();
+						s.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-		}
-		
 	}
 	
 /*	DESNECESSÁRIO / DEPOIS ESTA PARTE SERÁ EXCLUÍDA...

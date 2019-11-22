@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ContaDAO {
-	public Conta saldo(String cpf);
-	public Conta saldo(Integer id);
+	public BigDecimal saldo(String cpf);
+	public BigDecimal saldo(Integer id_conta);
 	public boolean inserir (Conta conta, Cliente cliente);
 	public boolean excluir (Conta conta);
 	public List<Conta> listar(String nome);
-	public Conta Saque(Conta conta, BigDecimal valor);
-	public Conta Deposito(Conta conta, BigDecimal valor);
+	public String saque(Integer id_conta, String senha, BigDecimal valor);
+	public String deposito(Integer id_conta, String senha, BigDecimal valor);
 }
