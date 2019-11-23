@@ -21,9 +21,7 @@ public class Main {
 		//insere conta1 na tabela contas
 		//contaDAO.inserir(conta1, Joao);
 		
-		//deposito de 300 reais registrado na tabela movimento
-		//contaDAO.Deposito(conta1, BigDecimal.valueOf(300));
-		
+
 		//TESTE DO LISTAR
 		//List<Conta> lista= contaDAO.listar("J%") ;
 		//for (int i=0; i<lista.size(); i++)
