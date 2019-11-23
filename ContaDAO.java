@@ -9,6 +9,6 @@ public interface ContaDAO {
 	public boolean inserir (Conta conta, Cliente cliente);
 	public boolean excluir (Conta conta);
 	public List<Conta> listar(String nome);
-	public String saque(Integer id_conta, String senha, BigDecimal valor);
-	public String deposito(Integer id_conta, String senha, BigDecimal valor);
+	public String saque(Conta conta, int ag, BigDecimal valor);
+	public String deposito(Conta conta, int ag, BigDecimal valor);
 }

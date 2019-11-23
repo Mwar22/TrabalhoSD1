@@ -195,7 +195,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 	/*
 	 * Realiza saque ATÔMICO
 	 */
-	public String saque(Integer id_conta, String senha, BigDecimal valor) {
+	public String saque(Conta conta, int ag, BigDecimal valor) {
 		int result=-1;
 		String sql;
 		if (valor.compareTo(new BigDecimal(0)) == -1) return "ERRO: O valor deve ser positivo!";
@@ -209,9 +209,9 @@ public class ContaDAOImplementacao implements ContaDAO {
 				s = conexaoBanco.createStatement();
 				
 				//insere o movimento com o saldo anterior à operação:
-				sql= 	"INSERT INTO Movimento (valor, tipo, id_conta, saldo_ant)"
-						+ " VALUES ("+valor+", 'SAQUE', "+id_conta
-						+", (select saldo from Contas where id_conta = "+id_conta+"));";
+				sql= 	"INSERT INTO Movimento (valor, descr, id_conta, saldo_ant)"
+						+ " VALUES ("+valor+", 'SAQUE na Ag.:'"+ag+"', "+conta.getIdConta()
+						+", (select saldo from Contas where id_conta = "+conta.getIdConta()+"));";
 
 				result = s.executeUpdate(sql);
 				if (result == 0) {//se não conseguir
@@ -221,7 +221,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 				
 				//Realiza a operação, atualizando o saldo:
 				sql =  " UPDATE Contas SET saldo = saldo -"+valor
-						+ "WHERE id_conta = "+id_conta+" AND saldo >= "+valor+"AND senha = '"+senha+"';";	
+						+ "WHERE id_conta = "+conta.getIdConta()+" AND saldo >= "+valor+"AND senha = '"+conta.getSenha()+"';";	
 				result = s.executeUpdate(sql);
 				
 				///(ATOMICIDADE) realiza todas as operações de uma vez, ou cancela tudo:
@@ -252,7 +252,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 	/*
 	 * Realiza depósito ATÔMICO
 	 */
-	public String deposito(Integer id_conta, String senha, BigDecimal valor) {
+	public String deposito(Conta conta, int ag, BigDecimal valor) {
 		int result=-1;
 		String sql;
 		if (valor.compareTo(new BigDecimal(0)) == -1) return "ERRO: O valor deve ser positivo!";
@@ -266,9 +266,9 @@ public class ContaDAOImplementacao implements ContaDAO {
 				s = conexaoBanco.createStatement();
 				
 				//insere o movimento com o saldo anterior à operação:
-				sql= 	"INSERT INTO Movimento (valor, tipo, id_conta, saldo_ant)"
-						+ " VALUES ("+valor+", 'DEPÓSITO', "+id_conta
-						+", (select saldo from Contas where id_conta = "+id_conta+"));";
+				sql= 	"INSERT INTO Movimento (valor, descr, id_conta, saldo_ant)"
+						+ " VALUES ("+valor+", 'DEPÓSITO na Ag.: "+ag+"', "+conta.getIdConta()
+						+", (select saldo from Contas where id_conta = "+conta.getIdConta()+"));";
 
 				result = s.executeUpdate(sql);
 				if (result == 0) {//se não conseguir
@@ -278,7 +278,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 				
 				//Realiza a operação, atualizando o saldo:
 				sql =  " UPDATE Contas SET saldo = saldo +"+valor
-						+ "WHERE id_conta = "+id_conta+"AND senha = '"+senha+"';";	
+						+ "WHERE id_conta = "+conta.getIdConta()+"AND senha = '"+conta.getSenha()+"';";	
 				result = s.executeUpdate(sql);
 				
 				///(ATOMICIDADE) realiza todas as operações de uma vez, ou cancela tudo:
