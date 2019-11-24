@@ -1,4 +1,4 @@
-package br.com.diego.banco;
+package com.br.diego.banco;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class ClienteDAOImplementacao implements ClienteDAO{
 	
 	//String url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
-	String url = "jdbc:postgresql://localhost/Banco?user=postgres&password=84067890";
+	String url = "jdbc:postgresql://localhost/Banco?user=postgres&password=postgres";
 
 	public boolean inserir(Cliente cliente) {
 		PreparedStatement ps = null;

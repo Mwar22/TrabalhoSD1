@@ -2,21 +2,24 @@ package com.br.diego.banco;
 
 import java.math.BigDecimal;
 
+
 public class Conta {
+
 	private Integer idConta;
 	private String cpf;
 	private BigDecimal saldo;
 	private String senha;
 	private Integer agencia;
-	
 
-	public Conta(Cliente cliente, BigDecimal saldo, String senha) {
+	public Conta(int id_conta, int ag, Cliente cliente, BigDecimal saldo, String senha) {
+		this.agencia= ag;
+		this.idConta= id_conta;
 		this.cpf = cliente.getCpf();
 		this.saldo = saldo;
 		this.senha = senha;
 	}
 
-	public Conta() {
+	public Conta(){
 		this.saldo = new BigDecimal(0);
 	}
 
@@ -43,7 +46,6 @@ public class Conta {
 	public void setSaldo(BigDecimal saldo) {
 		this.saldo = saldo;
 	}
-	
 
 	public String getSenha() {
 		return senha;
@@ -65,12 +67,11 @@ public class Conta {
 		StringBuilder strRetorno = new StringBuilder();
 		strRetorno.append("-------- ");
 		strRetorno.append("\nConta: ");
-		strRetorno.append("\nId: "+getIdConta());
-		strRetorno.append("\nCPF:"+getCpf());
-		strRetorno.append("\nSaldo: "+getSaldo().doubleValue());
+		strRetorno.append("\nId: " + getIdConta());
+		strRetorno.append("\nCPF:" + getCpf());
+		strRetorno.append("\nSaldo: " + getSaldo().doubleValue());
 		strRetorno.append("\n-------- ");
-		
-		return strRetorno.toString(); 
+		return strRetorno.toString();
 	}
 
 }
