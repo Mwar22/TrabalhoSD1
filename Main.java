@@ -1,45 +1,44 @@
 package com.br.diego.banco;
 
 import java.math.BigDecimal;
+import java.rmi.RemoteException;
 import java.util.List;
 
 
 public class Main {
 	public static void main(String[] args) {
-		ClienteDAOImplementacao c1 = new ClienteDAOImplementacao();
-		ContaDAOImplementacao contaDAO = new ContaDAOImplementacao();
-		Cliente Joao = new Cliente("João","77766633312", "testando@hotmail.com");
-		//insere Joao na tabela clientes
-		//c1.inserir(Joao);
+
+		BancoDAOImplementacao bancoDAO= null;
+		try {
+			bancoDAO = new BancoDAOImplementacao();
+		} catch (RemoteException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
-		Conta conta1 = new Conta(Joao,BigDecimal.valueOf(500),"asdfg");
-		conta1.setAgencia(45);
-		conta1.setIdConta(11156897);
+	
+
+	
 		
-		//conta1.setSenha("asdfg");
+
 		
-		//insere conta1 na tabela contas
-		//contaDAO.inserir(conta1, Joao);
+		//TESTE DO MÉTODO ACESSACONTA
+		Boolean acesso=false;
+		try {
+			acesso = bancoDAO.acessaConta(11156897, "asdfg");
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Teste de conta:\n"+acesso);
 		
-		//deposito de 300 reais registrado na tabela movimento
-		//contaDAO.Deposito(conta1, BigDecimal.valueOf(300));
+		try {
+			System.out.println("Teste de saque:\n"+bancoDAO.saque(38, 2, new BigDecimal(44), "aaaa"));
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		//TESTE DO LISTAR
-		//List<Conta> lista= contaDAO.listar("J%") ;
-		//for (int i=0; i<lista.size(); i++)
-		//System.out.println(lista.get(i).toString());
-		
-		//TESTE DO MÉTODO SALDO	com id	
-		//System.out.println("O saldo é: "+ contaDAO.saldo(11156897).toString());
-		//TESTE DO MÉTODO SALDO	com cpf	
-		//System.out.println("O saldo é: "+ contaDAO.saldo("77766633312").toString());
-		
-		//TESTE DO MÉTODO SAQUE
-		//System.out.println(contaDAO.saque(conta1, 4444, ,new BigDecimal(50)));
-		
-		//TESTE DO MÉTODO DEPÓSITO
-		System.out.println(conta1.toString());
-		System.out.println(contaDAO.deposito(conta1, 4444, new BigDecimal(500)));
 		
 	}
 }
