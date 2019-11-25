@@ -104,7 +104,8 @@ public class RMIServer extends UnicastRemoteObject implements DisponibleToClient
                     switch(tsk.getType())
                     {
                         case SAQUE:
-
+                      
+                  
                             break;
                         case SALDO:
                             //realiza o saldo no bando de dados usando as
@@ -164,7 +165,25 @@ public class RMIServer extends UnicastRemoteObject implements DisponibleToClient
         //cria uma nova tarefa e a adiciona a conta de orígem
         // e o destino conforme o javadoc para Task()
         Task tsk = new Task(4, Type.EXTRATO, ct, terminal);
-        tsk_manager.setInput(tsk);
+
+        //se estiver cheio, repassa para outro server
+        if (tsk_manager.isFull())
+        {
+           Server next =  servers.nextServer();
+           Registry rg = LocateRegistry.getRegistry(next.getIp(), 2001);
+            try {
+                DisponibleToClient so = (DisponibleToClient) registry.lookup(next.getId());
+                so.reqExtrato(ct, terminal);
+            } catch (Exception ex) {
+                System.out.println("Erro ao repassar requisição ao server < "+next.getId()+" >");
+                return false;
+            } 
+           
+        }
+        else
+        {
+            tsk_manager.setInput(tsk);
+        }
         return true;
     }
 
@@ -174,14 +193,50 @@ public class RMIServer extends UnicastRemoteObject implements DisponibleToClient
         // e o destino conforme o javadoc para Task()
  
         Task tsk = new Task(4, Type.SAQUE, ct, valor, terminal);
-        tsk_manager.setInput(tsk);
+
+        //se estiver cheio, repassa para outro server
+        if (tsk_manager.isFull())
+        {
+           Server next =  servers.nextServer();
+           Registry rg = LocateRegistry.getRegistry(next.getIp(), 2001);
+            try {
+                DisponibleToClient so = (DisponibleToClient) registry.lookup(next.getId());
+                so.reqSaque(ct, valor, terminal);
+            } catch (Exception ex) {
+                System.out.println("Erro ao repassar requisição ao server < "+next.getId()+" >");
+                return false;
+            } 
+           
+        }
+        else
+        {
+            tsk_manager.setInput(tsk);
+        }
         return true;
     }
 
     @Override
     public boolean reqTransferencia(Conta origem, Conta destino, double valor, String terminal) throws RemoteException {
         Task tsk = new Task(4, Type.SAQUE, origem, destino, valor, terminal);
-        tsk_manager.setInput(tsk);
+        
+        //se estiver cheio, repassa para outro server
+        if (tsk_manager.isFull())
+        {
+           Server next =  servers.nextServer();
+           Registry rg = LocateRegistry.getRegistry(next.getIp(), 2001);
+            try {
+                DisponibleToClient so = (DisponibleToClient) registry.lookup(next.getId());
+                so.reqTransferencia(origem, destino, valor, terminal);
+            } catch (Exception ex) {
+                System.out.println("Erro ao repassar requisição ao server < "+next.getId()+" >");
+                return false;
+            } 
+           
+        }
+        else
+        {
+            tsk_manager.setInput(tsk);
+        }
         return true;
     }
     
